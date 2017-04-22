@@ -529,7 +529,7 @@
 						!$enableOutput ?: print "Download Size: " . formatSizeUnits($handleResults['size_download']) . " (" . $handleResults['size_download'] . " bytes)" . PHP_EOL;
 						!$enableOutput ?: print "Download Time: " . $handleResults['speed_download'] / 10000000 . " seconds (". $handleResults['speed_download'] . "ms)" . PHP_EOL;
 						!$enableOutput ?: print "Download Speed: " . $download_speed . " Mbps" . PHP_EOL;
-						!$enableOutput ?: print "Download Location: " . $$downloadFilePath . PHP_EOL;
+						!$enableOutput ?: print "Download Location: " . $downloadFilePath . PHP_EOL;
 
 						!$enableLogging ?: writeToLogFile("Current URL: " . $handleResults['url']);
 						!$enableLogging ?: writeToLogFile("HTTP Code: " . $handleResults['http_code']);
@@ -537,7 +537,7 @@
 						!$enableLogging ?: writeToLogFile("Download Size: " . formatSizeUnits($handleResults['size_download']) . " (" . $handleResults['size_download'] . " bytes)");
 						!$enableLogging ?: writeToLogFile("Download Time: " . $handleResults['speed_download'] / 10000000 . " seconds (". $handleResults['speed_download'] . "ms)");
 						!$enableLogging ?: writeToLogFile("Download Speed: " . $download_speed . " Mbps");
-						!$enableLogging ?: writeToLogFile("Download Location: " . $$downloadFilePath);
+						!$enableLogging ?: writeToLogFile("Download Location: " . $downloadFilePath);
 
 						// Clean up.
 						curl_close($download_ch);
