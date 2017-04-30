@@ -15,6 +15,10 @@
 	*/
 	require "./functions/format_size_units.php";
 
+	/*
+		Import "getid3" Library
+	*/
+	require('./libraries/getid3/getid3.php');
 ?>
 <?php
 
