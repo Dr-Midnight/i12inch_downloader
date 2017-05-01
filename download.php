@@ -19,9 +19,18 @@
 		Import "getid3" Library
 	*/
 	require('./libraries/getid3/getid3.php');
+
 ?>
 <?php
 
+	/*
+		If Genre Parsing is enabled, initialize the getID3 engine.
+	*/
+	if($parse_genre_to_path)
+	{
+		$getID3 = new getID3;
+	}
+	
 	/*
 		Get Initial Input Variables
 	*/

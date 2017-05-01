@@ -70,4 +70,10 @@
 	$curl_timeout = 10000;
 	$curl_download_timeout = 60000;
 
+	/*
+		Define whether or not to move files to subdirectories based on their genre.
+		This will scan the ID3v2 tag for its genre, and create (if one does not exist) a directory for that genre. It will then move the song to that directory.
+	*/
+	$parse_genre_to_path = TRUE;
+
 ?>

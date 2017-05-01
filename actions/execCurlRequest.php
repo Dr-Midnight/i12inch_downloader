@@ -539,6 +539,129 @@
 						!$enableLogging ?: writeToLogFile("Download Speed: " . $download_speed . " Mbps");
 						!$enableLogging ?: writeToLogFile("Download Location: " . $downloadFilePath);
 
+						/*
+							If genre parsing is enabled, parse the genre from the ID3v2 tag, and move the file to a new directory based on the genre.
+						*/
+						if($parse_genre_to_path)
+						{
+							/*
+								Use the getid3 library to analyze the file's 
+							*/
+							$downloadFileTagInfo = $getID3->analyze($downloadFilePath);
+
+							getid3_lib::CopyTagsToComments($downloadFileTagInfo);
+
+							/*
+								Define an empty variable to hold the tag string.
+							*/
+							$downloadFileTagInfo_Genre = NULL;
+
+							/*
+								波動拳!!!
+							*/
+							if(is_array($downloadFileTagInfo))
+							{
+								if(is_array($downloadFileTagInfo["tags"]))
+								{
+									if(is_array($downloadFileTagInfo["tags"]["id3v2"]))
+									{
+										if(is_array($downloadFileTagInfo["tags"]["id3v2"]["genre"]))
+										{
+											/*
+												The genre tag splits on "/".
+												This causes getid3 to create multiple array elements.
+												Use a Hadōken to get to last tag. Maybe.
+												(Surely there's a better way to do this?)
+											*/
+
+											/*
+												Tag Segment 0
+											*/
+											if($downloadFileTagInfo["tags"]["id3v2"]["genre"]["0"])
+											{
+												// echo $downloadFileTagInfo["tags"]["id3v2"]["genre"]["0"];
+												$downloadFileTagInfo_Genre .= $downloadFileTagInfo["tags"]["id3v2"]["genre"]["0"];
+
+												/*
+													Tag Segment 1
+												*/
+												if($downloadFileTagInfo["tags"]["id3v2"]["genre"]["1"])
+												{
+													// echo $downloadFileTagInfo["tags"]["id3v2"]["genre"]["1"];
+													$downloadFileTagInfo_Genre .= $downloadFileTagInfo["tags"]["id3v2"]["genre"]["1"];
+
+													/*
+														Tag Segment 2
+													*/
+													if($downloadFileTagInfo["tags"]["id3v2"]["genre"]["2"])
+													{
+														// echo $downloadFileTagInfo["tags"]["id3v2"]["genre"]["2"];
+														$downloadFileTagInfo_Genre .= $downloadFileTagInfo["tags"]["id3v2"]["genre"]["2"];
+
+														/*
+															Tag Segment 3
+														*/
+														if($downloadFileTagInfo["tags"]["id3v2"]["genre"]["3"])
+														{
+															// echo $downloadFileTagInfo["tags"]["id3v2"]["genre"]["3"];
+															$downloadFileTagInfo_Genre .= $downloadFileTagInfo["tags"]["id3v2"]["genre"]["3"];
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+
+							/*
+								Make sure the script was able to successfully parse the genre.
+							*/
+							if(isset($downloadFileTagInfo_Genre) && !empty($downloadFileTagInfo_Genre))
+							{
+								/*
+									Set the new directory to move the file to.
+								*/
+								$updated_download_directory = $download_directory . $downloadFileTagInfo_Genre;
+
+								/*
+									Check to see if the directory exists. If it doesn't, create it.
+								*/
+								if(!file_exists($updated_download_directory))
+								{
+									mkdir($updated_download_directory, 0777, true);
+								}
+
+								/*
+									Define the new full path.
+								*/
+								$new_downloadFilePath = $updated_download_directory . "/" . $mp3SongName . ".mp3";
+
+								/*
+									http://php.net/manual/en/function.rename.php
+
+									Move the file to the new directory.
+								*/
+								if(rename($downloadFilePath, $new_downloadFilePath))
+								{
+									!$enableOutput ?: print "File Moved To: " . $new_downloadFilePath . PHP_EOL;
+									!$enableLogging ?: writeToLogFile("File Moved To: " . $new_downloadFilePath);
+								}
+							}
+
+							/*
+								Unset the variables as to not intefere with the next loop iteration.
+							*/
+							unset($downloadFileTagInfo);
+							unset($downloadFileTagInfo_Genre);
+						}
+						else
+						{
+							/*
+								No action taken.
+							*/
+						}
+
 						// Clean up.
 						curl_close($download_ch);
 					}
